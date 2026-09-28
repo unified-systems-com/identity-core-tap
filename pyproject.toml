@@ -1,10 +1,10 @@
 # TAP identity_core plugin — package-mode distribution.
-# Identity (conformance gate): slug "identity_core" == dist "tap-plugin-identity-core" ==
+# Identity (conformance gate): slug "identity_core" == dist "identity-core-tap" ==
 # namespace "tap_plugin.identity_core" == entry-point key. NOT a uv.workspace member.
 # Cross-cutting identity vocabulary substrate (oidc_issuer); github_core/aws_core/
 # sigstore_core/samsite depend on it downward. Spec: plugins/identity_core/specs/spec-identity-core-v0.md.
 [project]
-name = "tap-plugin-identity-core"
+name = "identity-core-tap"
 description = "TAP Identity Core plugin — cross-cutting federated-identity vocabulary (OIDC issuer) + issuer convergence primitives."
 requires-python = ">=3.14"
 dynamic = ["version"]
