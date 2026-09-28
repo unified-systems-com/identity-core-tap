@@ -389,7 +389,7 @@ Status: `Implemented`
 
 identity_core depends on nothing above core (`tap_grid`/`tap` only). Consumers depend
 **downward** on it: `github_core`, `aws_core`, `sigstore_core`, and `samsite` declare
-`tap-plugin-identity-core` in `pyproject.toml` and list `identity_core` in their
+`identity-core-tap` in `pyproject.toml` and list `identity_core` in their
 `depends_on`. The AST import-graph guard (`tap/plugin_deps.py`) enforces that the
 `from tap_plugin.identity_core...` imports are declared. The `samsite →
 github_core` issuer import is deleted in the same change (samsite imports
