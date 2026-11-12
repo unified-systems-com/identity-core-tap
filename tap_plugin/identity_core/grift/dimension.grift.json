@@ -1,0 +1,38 @@
+{
+  "metadata": {
+    "grift_version": "0"
+  },
+  "_reserved": {},
+  "batches": [
+    {
+      "batch_entity": {
+        "entity_id": "01a1d10a-eef9-75dc-866e-83e0ea09875b",
+        "entity_type": "batch",
+        "name": "Identity core dimensions v0.1.0",
+        "dimensions": {}
+      },
+      "batch_node": {
+        "source": "plugins.identity_core",
+        "name": "Identity core dimensions v0.1.0",
+        "description": "Dimension nodes for every dimension key the identity_core plugin declares, so each key has a declared node before the dimension map moves to keying by node id (tap#708, tap#711)."
+      },
+      "nodes": [
+        {
+          "entity": {
+            "entity_id": "01a1d10a-eef9-75dc-866e-83df20f9715f",
+            "entity_type": "dimension",
+            "name": "identity.protocol",
+            "dimensions": {
+              "tap.meta": "dimension"
+            }
+          },
+          "node": {
+            "name": "identity.protocol",
+            "description": "The identity protocol an identity-core node speaks, for example oidc (req-identity-core-dimensions)."
+          }
+        }
+      ],
+      "edges": []
+    }
+  ]
+}
