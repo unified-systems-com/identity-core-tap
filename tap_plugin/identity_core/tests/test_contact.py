@@ -183,6 +183,12 @@ class TestMailbox:
         assert not _import(got["nodes"], []).success
         assert not Mailbox.objects.exists()
 
+    def test_the_service_layer_refuses_it_too_not_only_the_importer(self):
+        """A valid mailbox payload written alone through ``write_batch`` has no edge, so it is refused there as well."""
+        made = _node(MAILBOX, {"address": "george@example.com", "display_name": "George"})
+        assert not made.success
+        assert not Mailbox.objects.exists()
+
     def test_a_mailbox_whose_edge_names_another_address_is_refused(self):
         got = contact.mailbox_fragment("m", "George", "george@example.com")
         got["nodes"][0]["node"]["address"] = "other@example.com"
