@@ -1,0 +1,16 @@
+{
+  "slug": "NAMES_CONTACT_MAILBOX__identity_core",
+  "name": "Names Contact Mailbox",
+  "description": "A record names this mailbox as its contact: the name and address someone gave as the party to reach about it. The source is WILDCARD (omitted), like HELD_BY_HUMAN, so any plugin's type can point here without identity_core depending upward on it; keeping the source to the kind of record described is the drawer's job. The edge carries nothing; the name is on the mailbox. It says who was named, not that the named party agreed, is a person, or still answers.",
+  "targets": [
+    "identity_core__mailbox"
+  ],
+  "identity": {
+    "discriminators": []
+  },
+  "property_schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {}
+  }
+}

@@ -112,6 +112,10 @@ a one-hop graph traversal rather than code-reading.
 | req-identity-core-team | [Team Model](#team-model) | Implemented | `identity_core__team`: a group of people, keyed on a stable `handle`; role-free; no free-form blob. |
 | req-identity-core-team-edges | [Team Edges](#team-edges) | Implemented | `BELONGS_TO_TEAM` (human or team to team, which is how teams nest) and `LEADS_TEAM` (human to team); no cardinality constrained. |
 | req-identity-core-responsible | [Responsibility Stamp](#responsibility-stamp) | Implemented | `team.responsible` on any entity, whose value is a team's entity id; one owner per entity; open value set. |
+| req-identity-core-email-address | [Email Address](#email-address) | Implemented | `identity_core__email_address`: one address, keyed by its canonical lower-cased form; holds no name; any plugin may write it. |
+| req-identity-core-mailbox | [Mailbox](#mailbox) | Implemented | `identity_core__mailbox`: one display name as written, used with one address; keyed by both; its address is a hotlink to the address node. |
+| req-identity-core-phone-number | [Phone Number](#phone-number) | Implemented | `identity_core__phone_number`: country code and national number apart; written only for a number stated with a country code. |
+| req-identity-core-contact-edges | [Contact Edges](#contact-edges) | Implemented | Seven edges, one relationship each, outward from the record that states the fact; none carries a property. |
 | req-identity-core-canonical-url | [Canonical Issuer URL](#canonical-issuer-url) | Implemented | One normalization spanning scheme'd/scheme-less forms; the convergence guarantee. |
 | req-identity-core-issuer-id | [Deterministic Issuer Id](#deterministic-issuer-id) | Implemented | `oidc_issuer_id(raw)` over the canonical form; the sole id path. Namespace is the per-plugin `IDENTITY_CORE_NAMESPACE` (no repo-wide `TAP_NAMESPACE` constant exists; per-plugin is the convention). |
 | req-identity-core-envelope | [Node Envelope Helper](#node-envelope-helper) | Implemented | `oidc_issuer_node_envelope(raw, *, dimensions=None)` returns the `{entity, node}` GRIFT fragment consumers merge. `display_name` param dropped — the spine projects `get_name()`=issuer_url, so a divergent name would be overwritten (honest v0 deviation). |
@@ -320,6 +324,123 @@ One owner per entity: a dimension holds one value per key. The value set is open
 | req-identity-core-responsible-4 | Dangling Stamps Reported | Backlog | A Search that lists `team.responsible` values matching no live team. |
 | req-identity-core-responsible-5 | RACI | Backlog | Accountable, consulted and informed (`team.accountable` and others) are not defined here; consulted and informed are many-valued and would need keyed dimensions or edges. |
 | req-identity-core-responsible-6 | Team To Dimension Edge | Implemented | `ANSWERS_FOR_DIMENSION__identity_core` runs from an `identity_core__team` to a `dimension` node (for example `team.responsible`), carries no properties, and its description says the target is a dimension node. It records that a team answers under a key; the stamp itself stays a dimension on the entity. Cardinality is not constrained. |
+
+### Email Address
+----
+RID: `req-identity-core-email-address`
+
+Status: `Implemented`
+
+`ENTITY_TYPE = "identity_core__email_address"`, `ENTITY_NAME = "Email Address"`. One email address, independent of who uses it. Added 2026-11-13 (ruled by George 2026-11-11 and 2026-11-12).
+
+The reason for the type is a join nothing made. An identity provider's user, a multi-factor user, a forge account, a cloud account's root contact, a commit's author line and a contact typed onto an application record all store an email as text on their own node. The address is the one value they share. As a node, "every record that names this address" is one hop, in any plugin, with no plugin depending on another.
+
+It is not a person and does not claim one. An address is reassigned and aliased, which is why `identity_core__human` is keyed by a handle and never by an address (`req-identity-core-human`). Cartography's ontology says the same of its own join key: a normalised email is "not a unique identifier". A person is tied to an address by an edge someone had evidence for (`USES_EMAIL_ADDRESS`), never by a collector from the address alone.
+
+Field: `address`, required, the identity. `NATURAL_KEY = ("address",)`. The canonical form is the address with surrounding space dropped and the whole of it lower-cased, defined once in `contact.canonical_email`. Nothing else is folded: dots and plus-tags mean different things at different providers, and folding them would merge strangers. Lower-casing the part before the `@` is itself a choice with a cost, accepted on purpose: SMTP lets a server treat that part as case-sensitive (RFC 5321 section 2.3.11), so `User@example.com` and `user@example.com` could in principle be two mailboxes, and here they are one node. In practice almost no server distinguishes them, while systems routinely store the same address in different case, so not folding would split one mailbox into several nodes far more often than folding merges two. A source's own spelling stays on the source's record. A write whose `address` is not already in that form is refused and never rewritten, so two observers cannot disagree about the key and every observer must call the one function. This follows the rule already used for issuers here (`req-identity-core-canonical-url`) and the convention agreed for address-like nodes across `computing_core` and this plugin: key on the canonical stored form, canonicalise in one place, and keep a source's own spelling on the source's own record.
+
+The type holds no name. Three systems use three names with one address, so a single name on the address would be whichever writer came last; STIX 2.1's `email-addr` and UCO's address facet have exactly that shape and that problem. The name a system uses is on that system's account, or on a mailbox (`req-identity-core-mailbox`).
+
+`contact.email_address_node(ref, raw)` returns the GRIFT node for an address, or None when the text is not one.
+
+**Prior art, pinned.** Searched 2026-11-12. Standards: STIX 2.1 (OASIS, 2021-06-10), UCO 1.5.0, RFC 5322 and RFC 6532, vCard RFC 6350, tel URI RFC 3966, SCIM RFC 7643, schema.org V30.1, FOAF 0.99, W3C ORG (2014), OCSF 1.9.0, inetOrgPerson RFC 2798 and RFC 4519, and libphonenumber's `phonenumber.proto` (master). Tools: Cartography (current docs and 0.94.0), BloodHound CE and OpenGraph, Maltego's Standard Entities Catalog (2026-07-14), MISP's email object v19 and person object v21, SpiderFoot (master), JupiterOne, Microsoft Graph v1.0, git's mailmap and GitHub's commits API, Backstage. The investigation tools make the address a node (Maltego, SpiderFoot, STIX); the inventory graphs keep it a property and join on it (Cartography, BloodHound, JupiterOne). This plugin does both: the node here, and an account's own field hotlinked to it. None of the sources puts a name on a relationship. ITU-T E.164 itself was read only through summaries.
+
+#### Acceptance Criteria
+
+| ACID | Title | Status | Description |
+| --- | --- | :---: | --- |
+| req-identity-core-email-address-1 | Keyed By The Canonical Address | Implemented | A write with a canonical `address` succeeds and the node's display name is the address; a write whose address is not in canonical form (upper case, surrounding space, a display name, not an address) is refused and nothing is written. |
+| req-identity-core-email-address-2 | One Definition Of Canonical | Implemented | `contact.canonical_email` drops surrounding space and lower-cases the whole address, the part before the `@` included; it folds nothing else and returns None for text that is not one address. The check is on shape, not deliverability: one `@`; a local part of letters, digits and the marks RFC 5322 allows unquoted, with no leading, trailing or doubled dot; and a domain of labels made of letters, digits and inner hyphens. A quoted local part and an address literal are not accepted. The text is lower-cased first and the result is what is checked, so the canonical form of a canonical address is itself and the helper never builds a node the model refuses. The model validates with the same function. Two addresses that differ only in case are therefore one node, by decision. |
+| req-identity-core-email-address-3 | No Name | Implemented | A write carrying `name` is refused. |
+| req-identity-core-email-address-4 | Not A Person | Implemented | The type has no edge to a human that a collector draws from the address alone; `USES_EMAIL_ADDRESS` is drawn by an operator or a matcher. This is a rule on writers, stated in the edge's description, not a write-time refusal. |
+
+### Mailbox
+----
+RID: `req-identity-core-mailbox`
+
+Status: `Implemented`
+
+`ENTITY_TYPE = "identity_core__mailbox"`, `ENTITY_NAME = "Mailbox"`. One display name as it was written, used with one email address: `George Chamales <george@example.com>`. RFC 5322 defines that pair and calls it a mailbox (`mailbox = name-addr / addr-spec`; `name-addr = [display-name] angle-addr`). Added 2026-11-13 (ruled by George 2026-11-12, after the prior-art search above).
+
+Why it is a node. The first design put the name on the edge from a record to the address. George's rule: an edge is lightweight, and wanting to put context on one usually means a node is missing. The missing node is the pair. It is not a property of the address, for the reason above, and it is a recognised unit in the field: a git commit's author and committer are each one, `.mailmap` maps one pair to another, OCSF keeps `from_mailbox` beside the bare `from`, and MISP's email object pairs `from` with `from-display-name`. So a record points at a mailbox with an edge that carries nothing, and the mailbox points at its address.
+
+Where this goes further than the field, stated plainly: every source above that has the pair keeps it inside the record that used it. Lifting it out into a node that several records share is this plugin's own step. It is taken because a commit's author cannot be an account, there are too many commits to give each a contact node of its own, and one type to search by name across every source is the point.
+
+What does not need one: an account. A system's own user record is already the node for the party it names. It carries its own name and points at the address directly (`REGISTERED_WITH_EMAIL`). A mailbox is for a party a record names and has no node for.
+
+Fields: `address` (the canonical address, as on the address node) and `display_name` (the name exactly as written, less surrounding space; not blank, no control character). `NATURAL_KEY = ("address", "display_name")`. Two spellings of a name at one address are two mailboxes on one address node; nothing merges them and nothing is overwritten. A name with no address makes no mailbox: a name alone as a key would merge every John Smith, so it stays a field on the record that stated it.
+
+`address` is a hotlink (`HOTLINKS`, mode `exact`, to `DELIVERS_TO_ADDRESS`): the field and the edge to the address node must agree, so a mailbox cannot be written naming an address it has no edge to, and the edge cannot outlive the field. This is the first hotlink declared in a plugin. `contact.mailbox_fragment(ref, display_name, raw_address)` returns the address node, the mailbox node and the edge with its hotlink data, for one batch.
+
+A person is tied to a mailbox with the existing `HELD_BY_HUMAN`, whose source is unrestricted.
+
+#### Acceptance Criteria
+
+| ACID | Title | Status | Description |
+| --- | --- | :---: | --- |
+| req-identity-core-mailbox-1 | The Pair Is The Key | Implemented | Two mailboxes with one address and two names are two nodes on one address node; the same pair written twice is one mailbox, one address and one edge. |
+| req-identity-core-mailbox-2 | Address And Edge Agree | Implemented | A mailbox written with no `DELIVERS_TO_ADDRESS` edge, or with an edge naming another address, is refused whole. |
+| req-identity-core-mailbox-3 | Canonical Address, Name As Written | Implemented | An address not in canonical form, a padded or empty name, a missing name and a missing address are each refused. |
+| req-identity-core-mailbox-4 | One Fragment Writes It | Implemented | `contact.mailbox_fragment` yields the address node, the mailbox and the edge, and importing it succeeds; it returns None when either the name or the address is unusable. |
+| req-identity-core-mailbox-5 | Nothing Is Carried On An Edge | Implemented | `NAMES_CONTACT_MAILBOX` and `DELIVERS_TO_ADDRESS` declare no property. The hotlink data on `DELIVERS_TO_ADDRESS` is the grid's own, validated by the grid, and holds only the address the field already holds. |
+
+### Phone Number
+----
+RID: `req-identity-core-phone-number`
+
+Status: `Implemented`
+
+`ENTITY_TYPE = "identity_core__phone_number"`, `ENTITY_NAME = "Phone Number"`. One phone number, with its country code and its national number as separate fields. Added 2026-11-13 (ruled by George 2026-11-12: "we should always have a field for country code, separate from the in-country code").
+
+A number with a country code identifies one line anywhere, which is what makes a shared node safe. A number without one does not: "555-0100" means something only inside a country nobody named. The tel URI standard says so directly (RFC 3966: "Local numbers MUST have a 'phone-context' parameter that identifies the scope of their validity"), and libphonenumber refuses to parse one unless told a default region. So no country code is ever assumed, and a number stated without one is never written as this type. It stays on the record that stated it, with the country code null, meaning never sent, until one is known. Writing it here with a null country code would also be wrong mechanically: a null in a natural key means the row cannot be found again, so every run would write another.
+
+Fields: `country_code` (1 to 3 digits, no plus sign), `national_number` (digits), `extension` (digits, or the empty string when there is none). `NATURAL_KEY = ("country_code", "national_number", "extension")`. The empty extension is a value, not a gap, so a number with none is still found again, and a desk line and its switchboard are two nodes.
+
+How long a country code is follows from a number's leading digits: zones 1 and 7 have one-digit codes, a fixed list has two, and every other code has three. The type checks that `country_code` has the length its own digits imply and that the whole number is at most 15 digits. It does not check that a code is assigned to a country; that list changes and is not kept here.
+
+The text as typed and how the country code came to be known are facts about one statement of a number, and belong on the record that made it. `contact.parse_phone(raw)` returns both with the split (`raw`, and `source`: `plus_sign` when the text was in international form, `not_given` otherwise), so a stating record can store them. This is libphonenumber's model (`raw_input`, `country_code_source`) without its region inference. `contact.phone_number_node(ref, phone)` returns the node, or None when the number has no country code.
+
+#### Acceptance Criteria
+
+| ACID | Title | Status | Description |
+| --- | --- | :---: | --- |
+| req-identity-core-phone-number-1 | Country Code And Number Apart | Implemented | A number in international form is split at its country code for one-, two- and three-digit codes; separators are dropped; an extension is kept apart. |
+| req-identity-core-phone-number-2 | No Country Code Is Ever Assumed | Implemented | Text with no leading plus parses to a number with `country_code` None and `source` `not_given`, and `phone_number_node` returns None for it. |
+| req-identity-core-phone-number-3 | Only A Whole Number Is Written | Implemented | A write with no country code, a code with a plus sign, a code of the wrong length for its digits, a leading zero, non-digits, or more than 15 digits in all is refused. |
+| req-identity-core-phone-number-4 | Extension In The Key | Implemented | The same number with and without an extension is two nodes; a number written with no extension has `extension` empty. |
+| req-identity-core-phone-number-5 | Assigned Codes Not Checked | Backlog | Whether a country code is assigned is not checked. A list would need a pinned source and an update path. |
+
+### Contact Edges
+----
+RID: `req-identity-core-contact-edges`
+
+Status: `Implemented`
+
+Seven edges, one relationship each, each running outward from the record that states the fact, and none carrying a property (`req-identity-core-mailbox`, on why).
+
+- **`DELIVERS_TO_ADDRESS__identity_core`**: `mailbox` to `email_address`. The mailbox's own address, mirrored by its hotlink.
+- **`REGISTERED_WITH_EMAIL__identity_core`**: any source to `email_address`. The address on an account's own record. An account that keeps the address as a field declares the field as a hotlink to this edge.
+- **`USES_EMAIL_ADDRESS__identity_core`**: `human` to `email_address`. Drawn by an operator or a matcher, not by a collector.
+- **`NAMES_CONTACT_MAILBOX__identity_core`**: any source to `mailbox`. A record names this mailbox as its contact.
+- **`REGISTERED_WITH_PHONE__identity_core`**: any source to `phone_number`. The number on an account's own record.
+- **`NAMES_CONTACT_PHONE__identity_core`**: any source to `phone_number`. The number a record gives for its contact.
+- **`NAMES_CONTACT_ORGANIZATION__identity_core`**: any source to `organization`. The organization a record gives for its contact. The organization is found by name, the only key that type has, so two spellings are two organizations.
+
+"Any source" is a wildcard, as on `HELD_BY_HUMAN` and for the same reason: a vendor plugin's type can point here without this plugin depending on it. Each edge has an empty identity discriminator list, so the same relationship written twice is one edge.
+
+A source declared on an edge is a declaration and not a write-time refusal: the grid does not yet refuse an edge from a type the definition does not list (`unified-systems-com/tap#397`). `USES_EMAIL_ADDRESS` from something other than a human is therefore accepted today.
+
+The author and committer of a commit are two more relationships of this kind (commit to mailbox). They belong to the plugin that owns the commit type and are not declared here.
+
+#### Acceptance Criteria
+
+| ACID | Title | Status | Description |
+| --- | --- | :---: | --- |
+| req-identity-core-contact-edges-1 | Each Is Accepted | Implemented | Each of the seven edges is written between a source and its target type. |
+| req-identity-core-contact-edges-2 | No Properties | Implemented | Every one declares an empty property schema. |
+| req-identity-core-contact-edges-3 | Written Twice Is One Edge | Implemented | A mailbox fragment imported twice leaves one `DELIVERS_TO_ADDRESS` edge. |
+| req-identity-core-contact-edges-4 | Names Conform | Implemented | `validate_plugin --strict` accepts all seven slugs. |
+| req-identity-core-contact-edges-5 | Declared Sources Enforced | Backlog | An edge from a source its definition does not list is refused, once the grid enforces declared sources. |
 
 ### Canonical Issuer URL
 ----

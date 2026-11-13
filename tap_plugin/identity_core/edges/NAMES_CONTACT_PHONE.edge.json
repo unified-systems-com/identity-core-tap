@@ -1,0 +1,16 @@
+{
+  "slug": "NAMES_CONTACT_PHONE__identity_core",
+  "name": "Names Contact Phone",
+  "description": "A record names this phone number as the number to reach its contact on. The source is WILDCARD (omitted), like HELD_BY_HUMAN, so any plugin's type can point here without identity_core depending upward on it; keeping the source to the kind of record described is the drawer's job. Written only for a number stated with its country code; a number without one has no node to point at and stays on the record that stated it.",
+  "targets": [
+    "identity_core__phone_number"
+  ],
+  "identity": {
+    "discriminators": []
+  },
+  "property_schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {}
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "slug": "DELIVERS_TO_ADDRESS__identity_core",
+  "name": "Delivers To Address",
+  "description": "A mailbox is a name used with this address. The source is a mailbox; the target is its email address. Every mailbox has exactly one, and it mirrors the mailbox's own address field: the mailbox declares that field as a hotlink, so the two cannot disagree. The hotlink data on the edge is system-validated and is not part of this schema.",
+  "sources": [
+    "identity_core__mailbox"
+  ],
+  "targets": [
+    "identity_core__email_address"
+  ],
+  "identity": {
+    "discriminators": []
+  },
+  "property_schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {}
+  }
+}

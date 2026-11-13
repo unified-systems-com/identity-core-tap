@@ -1,0 +1,16 @@
+{
+  "slug": "NAMES_CONTACT_ORGANIZATION__identity_core",
+  "name": "Names Contact Organization",
+  "description": "A record names this organization as the party behind its contact: the organization name someone gave for it. The source is WILDCARD (omitted), like HELD_BY_HUMAN, so any plugin's type can point here without identity_core depending upward on it; keeping the source to the kind of record described is the drawer's job. The organization is found by name, the only key that type has, so two spellings of one name are two organizations and the edge does not reconcile them.",
+  "targets": [
+    "identity_core__organization"
+  ],
+  "identity": {
+    "discriminators": []
+  },
+  "property_schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {}
+  }
+}
