@@ -1,0 +1,16 @@
+{
+  "slug": "REGISTERED_WITH_EMAIL__identity_core",
+  "name": "Registered With Email",
+  "description": "An account in some system is registered with this email address: it is the address on the account's own record, often its login. The source is WILDCARD (omitted), like HELD_BY_HUMAN, so any plugin's type can point here without identity_core depending upward on it; keeping the source to the kind of record described is the drawer's job. An account that keeps the address as a field declares that field as a hotlink to this edge, so the field and the edge cannot disagree. The edge says nothing about who reads the mail and carries no name: the account has its own.",
+  "targets": [
+    "identity_core__email_address"
+  ],
+  "identity": {
+    "discriminators": []
+  },
+  "property_schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {}
+  }
+}

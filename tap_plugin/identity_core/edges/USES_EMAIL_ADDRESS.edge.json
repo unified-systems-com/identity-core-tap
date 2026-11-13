@@ -1,0 +1,19 @@
+{
+  "slug": "USES_EMAIL_ADDRESS__identity_core",
+  "name": "Uses Email Address",
+  "description": "A person uses this email address. The source is a human; the target is an email address. Drawn by an operator or a matcher that has evidence for it, never by a collector from the address alone: an address is reassigned and aliased, so holding one does not make a record that person. One human may use several addresses and one address may be used by several humans (a shared inbox); neither is refused.",
+  "sources": [
+    "identity_core__human"
+  ],
+  "targets": [
+    "identity_core__email_address"
+  ],
+  "identity": {
+    "discriminators": []
+  },
+  "property_schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {}
+  }
+}

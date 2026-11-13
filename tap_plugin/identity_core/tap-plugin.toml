@@ -6,17 +6,27 @@ name = "TAP Identity Core"
 description = "Cross-cutting federated-identity vocabulary substrate — the OIDC issuer convergence node + issuer identity primitives. Library plugin: no collector. Owns two generic edges with wildcard sources (TRUSTS_ISSUER, HELD_BY_HUMAN) so any principal can trust an issuer, and any account can resolve to one human, without the substrate depending upward. Also the people vocabulary: human, team, and the BELONGS_TO_TEAM and LEADS_TEAM edges."
 
 [models]
+identity_core__email_address = "tap_plugin.identity_core.models.email_address.EmailAddress"
 identity_core__human = "tap_plugin.identity_core.models.human.Human"
+identity_core__mailbox = "tap_plugin.identity_core.models.mailbox.Mailbox"
 identity_core__oidc_issuer = "tap_plugin.identity_core.models.oidc_issuer.OidcIssuer"
 identity_core__organization = "tap_plugin.identity_core.models.organization.Organization"
+identity_core__phone_number = "tap_plugin.identity_core.models.phone_number.PhoneNumber"
 identity_core__team = "tap_plugin.identity_core.models.team.Team"
 
 [edges]
 ANSWERS_FOR_DIMENSION__identity_core = "edges/ANSWERS_FOR_DIMENSION.edge.json"
 BELONGS_TO_TEAM__identity_core = "edges/BELONGS_TO_TEAM.edge.json"
+DELIVERS_TO_ADDRESS__identity_core = "edges/DELIVERS_TO_ADDRESS.edge.json"
 HELD_BY_HUMAN__identity_core = "edges/HELD_BY_HUMAN.edge.json"
 LEADS_TEAM__identity_core = "edges/LEADS_TEAM.edge.json"
+NAMES_CONTACT_MAILBOX__identity_core = "edges/NAMES_CONTACT_MAILBOX.edge.json"
+NAMES_CONTACT_ORGANIZATION__identity_core = "edges/NAMES_CONTACT_ORGANIZATION.edge.json"
+NAMES_CONTACT_PHONE__identity_core = "edges/NAMES_CONTACT_PHONE.edge.json"
+REGISTERED_WITH_EMAIL__identity_core = "edges/REGISTERED_WITH_EMAIL.edge.json"
+REGISTERED_WITH_PHONE__identity_core = "edges/REGISTERED_WITH_PHONE.edge.json"
 TRUSTS_ISSUER__identity_core = "edges/TRUSTS_ISSUER.edge.json"
+USES_EMAIL_ADDRESS__identity_core = "edges/USES_EMAIL_ADDRESS.edge.json"
 
 [[boot.records]]
 name = "ci"
