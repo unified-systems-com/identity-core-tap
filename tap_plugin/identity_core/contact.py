@@ -41,6 +41,8 @@ MAX_PHONE_DIGITS = 15
 # One @, something either side, no whitespace or control character, and a dot-free or dotted domain.
 _ADDRESS = re.compile(r"[^\s@\x00-\x1f\x7f<>]+@[^\s@\x00-\x1f\x7f<>]+")
 _CONTROL = re.compile(r"[\x00-\x1f\x7f]")
+# What an unquoted local part may hold beside letters and digits: the dot, and RFC 5322's "atext" marks.
+_LOCAL_PUNCTUATION = frozenset(".!#$%&'*+/=?^_`{|}~-")
 _SEPARATORS = re.compile(r"[\s().\-]")
 _EXTENSION = re.compile(r"(?:;ext=|\s*(?:ext\.?|x|#)\s*)(\d{1,16})\s*$", re.IGNORECASE)
 # How long a country code is follows from its leading digits (the E.164 zone structure): zones 1
@@ -57,22 +59,27 @@ def canonical_email(raw: Any) -> str | None:
     Surrounding whitespace is dropped and the whole address is lower-cased. Nothing else is
     folded. A display name is not accepted here: pass the address alone.
 
-    The check is on shape, not deliverability: one ``@``; a local part with no leading, trailing
-    or doubled dot; a domain of labels made of letters, digits and inner hyphens. A quoted local
+    The check is on shape, not deliverability: one ``@``; a local part of letters, digits and the
+    marks RFC 5322 allows unquoted, with no leading, trailing or doubled dot; a domain of labels
+    made of letters, digits and inner hyphens. The result is stable: it is its own canonical form. A quoted local
     part and an address literal (``user@[192.0.2.1]``) are not accepted. Malformed text stays on
     the record that held it and never becomes a shared node.
     """
     if not isinstance(raw, str):
         return None
-    address = raw.strip()
+    # Lower-case first and judge the result, so the form returned is the form that was checked:
+    # passing a canonical address back in always returns it unchanged.
+    address = raw.strip().lower()
     if not address or len(address) > MAX_ADDRESS or not _ADDRESS.fullmatch(address):
         return None
     local, _, domain = address.rpartition("@")
     if not local or local.startswith(".") or local.endswith(".") or ".." in local:
         return None
+    if not all(char.isalnum() or char in _LOCAL_PUNCTUATION for char in local):
+        return None
     if not all(_is_domain_label(label) for label in domain.split(".")):
         return None
-    return address.lower()
+    return address if address.lower() == address else None
 
 
 def _is_domain_label(label: str) -> bool:

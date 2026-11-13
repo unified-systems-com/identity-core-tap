@@ -43,7 +43,13 @@ class TestCanonicalEmail:
     def test_case_and_surrounding_space_are_the_only_things_folded(self, raw, expected):
         assert contact.canonical_email(raw) == expected
 
-    @pytest.mark.parametrize("raw", ["", " ", "george", "@example.com", "george@", "a@b@c", "george @example.com", "George <george@example.com>", "george@example..com", "george@.example.com", "george@example.com.", "a\n@b.com", None, 7, "x" * 250 + "@example.com", "a..b@example.com", ".a@example.com", "a.@example.com", "a@example_com", "a@-example.com", "a@example-.com", "user@[192.0.2.1]", '"quoted local"@example.com'])
+    @pytest.mark.parametrize("raw", ["george@example.com", "  George@Example.COM ", "Jürgen@Bücher.example", "ΑΒΓ@ΔΕΖ.example", "STRASSE@example.com", "a@İ.com", "ǅ@example.com", "o'brien_x-1@mail-host.example.co.uk"])
+    def test_the_canonical_form_is_its_own_canonical_form(self, raw):
+        """Whatever comes out goes back in unchanged, so a node this builds is never one the model refuses."""
+        once = contact.canonical_email(raw)
+        assert once is None or contact.canonical_email(once) == once
+
+    @pytest.mark.parametrize("raw", ["", " ", "george", "@example.com", "george@", "a@b@c", "george @example.com", "George <george@example.com>", "george@example..com", "george@.example.com", "george@example.com.", "a\n@b.com", None, 7, "x" * 250 + "@example.com", "a..b@example.com", ".a@example.com", "a.@example.com", "a@example_com", "a@-example.com", "a@example-.com", "user@[192.0.2.1]", '"quoted local"@example.com', "a,b@example.com", "foo()@example.com", "a;b@example.com", "a@İ.com", "a\u0307@example.com"])
     def test_what_is_not_an_address_is_none(self, raw):
         assert contact.canonical_email(raw) is None
 
