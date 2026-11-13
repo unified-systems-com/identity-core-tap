@@ -36,12 +36,14 @@ class TestCanonicalEmail:
             ("  George@Example.COM ", "george@example.com"),
             ("g.chamales+tap@example.com", "g.chamales+tap@example.com"),
             ("user@localhost", "user@localhost"),
+            ("o'brien_x-1@mail-host.example.co.uk", "o'brien_x-1@mail-host.example.co.uk"),
+            ("Jürgen@Bücher.example", "jürgen@bücher.example"),
         ],
     )
     def test_case_and_surrounding_space_are_the_only_things_folded(self, raw, expected):
         assert contact.canonical_email(raw) == expected
 
-    @pytest.mark.parametrize("raw", ["", " ", "george", "@example.com", "george@", "a@b@c", "george @example.com", "George <george@example.com>", "george@example..com", "george@.example.com", "george@example.com.", "a\n@b.com", None, 7, "x" * 250 + "@example.com"])
+    @pytest.mark.parametrize("raw", ["", " ", "george", "@example.com", "george@", "a@b@c", "george @example.com", "George <george@example.com>", "george@example..com", "george@.example.com", "george@example.com.", "a\n@b.com", None, 7, "x" * 250 + "@example.com", "a..b@example.com", ".a@example.com", "a.@example.com", "a@example_com", "a@-example.com", "a@example-.com", "user@[192.0.2.1]", '"quoted local"@example.com'])
     def test_what_is_not_an_address_is_none(self, raw):
         assert contact.canonical_email(raw) is None
 

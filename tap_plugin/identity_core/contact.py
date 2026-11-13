@@ -56,6 +56,11 @@ def canonical_email(raw: Any) -> str | None:
 
     Surrounding whitespace is dropped and the whole address is lower-cased. Nothing else is
     folded. A display name is not accepted here: pass the address alone.
+
+    The check is on shape, not deliverability: one ``@``; a local part with no leading, trailing
+    or doubled dot; a domain of labels made of letters, digits and inner hyphens. A quoted local
+    part and an address literal (``user@[192.0.2.1]``) are not accepted. Malformed text stays on
+    the record that held it and never becomes a shared node.
     """
     if not isinstance(raw, str):
         return None
@@ -63,9 +68,16 @@ def canonical_email(raw: Any) -> str | None:
     if not address or len(address) > MAX_ADDRESS or not _ADDRESS.fullmatch(address):
         return None
     local, _, domain = address.rpartition("@")
-    if not local or not domain or domain.startswith(".") or domain.endswith(".") or ".." in domain:
+    if not local or local.startswith(".") or local.endswith(".") or ".." in local:
+        return None
+    if not all(_is_domain_label(label) for label in domain.split(".")):
         return None
     return address.lower()
+
+
+def _is_domain_label(label: str) -> bool:
+    """One dot-separated part of a domain: letters and digits of any script, and inner hyphens."""
+    return bool(label) and not label.startswith("-") and not label.endswith("-") and all(char.isalnum() or char == "-" for char in label)
 
 
 def clean_display_name(raw: Any) -> str | None:
