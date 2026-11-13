@@ -10,7 +10,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('identity_core', '0006_team'),
-        ('tap_grid', '0010_entity_natural_key_backfill'),
+        ('tap_grid', '0001_initial'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
