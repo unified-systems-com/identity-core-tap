@@ -14,6 +14,7 @@ from tap_plugin.identity_core.issuer import (
     oidc_issuer_node_envelope,
 )
 from tap_plugin.identity_core.models import OidcIssuer
+from tap_plugin.identity_core.tests.conftest import dimension_view
 
 from tap_grid.caller_context import CallerContext
 from tap_grid.models import Entity
@@ -143,7 +144,7 @@ class TestOidcIssuerModel:
     def test_default_dimensions_applied(self, ctx):
         iid = _make_issuer(ctx)
         entity = Entity.objects.get(pk=iid)
-        assert entity.dimensions.get("identity.protocol") == "oidc"
+        assert dimension_view(entity).get("identity.protocol") == "oidc"
 
     def test_entity_name_is_issuer_url(self, ctx):
         """req-identity-core-model: get_name() is the issuer_url — no well-known
