@@ -5,6 +5,7 @@ from typing import Any, ClassVar
 from django.core.exceptions import ValidationError
 from django.db import models
 
+from tap_grid.event_time import NO_EVENT_TIME
 from tap_grid.models import BaseModel
 from tap_plugin.identity_core.contact import MAX_ADDRESS, MAX_DISPLAY_NAME, canonical_email, clean_display_name
 
@@ -41,6 +42,8 @@ class Mailbox(BaseModel):
     ENTITY_ICON: ClassVar[str] = "mailbox"
     DEFAULT_DIMENSIONS: ClassVar[dict[str, str]] = {}
     NATURAL_KEY: ClassVar[tuple[str, ...]] = ("address", "display_name")
+    # No event time: a name-and-address pair as written; it stores no time, and the record that wrote it carries its own.
+    EVENT_TIME = NO_EVENT_TIME
 
     # Written out as literals: the plugin validator reads this declaration statically. A test holds
     # them equal to the names contact.py builds the edge with.

@@ -8,9 +8,10 @@
 # are not consulted when it is called — the cron MINUTE, staggered per repo so the org's
 # nightlies do not burst, the slug, the pin, and the grant.
 #
-# No `latest_ref`: there is deliberately no "latest core release" row. The floor is proven on
-# every push, a release is too late to be early warning, and a hardcoded release ref goes stale
-# and reds the whole run on a question nobody is asking. The input is optional for that reason.
+# No `latest_ref`: since core v0.4.7 an empty `latest_ref` means core's newest release, resolved
+# each night (req-tap-plugin-extdev-repo-ci-16), so the informational release row follows it with
+# no tag to keep bumped. The `migrations` row (tap#1262) is on by default and replays this plugin's
+# migrations from zero; it needs no grant beyond the one below.
 name: nightly
 on:
   schedule:
@@ -20,7 +21,7 @@ permissions:
   contents: read
 jobs:
   nightly:
-    uses: unified-systems-com/tap/.github/workflows/plugin-nightly.yml@c3b64dffca512afa852f588560f774e2b357b655
+    uses: unified-systems-com/tap/.github/workflows/plugin-nightly.yml@2338a593f89afde5db271d2fad4572539babef1f
     # REQUIRED on this job. GitHub checks every job of a called workflow — and of the workflows
     # IT calls — against this grant BEFORE starting anything, so a scope missing here fails the
     # whole run at startup with zero jobs and no log. `security-events: write` is plugin-ci's

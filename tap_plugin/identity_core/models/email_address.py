@@ -5,6 +5,7 @@ from typing import Any, ClassVar
 from django.core.exceptions import ValidationError
 from django.db import models
 
+from tap_grid.event_time import NO_EVENT_TIME
 from tap_grid.models import BaseModel
 from tap_plugin.identity_core.contact import MAX_ADDRESS, canonical_email
 
@@ -37,6 +38,8 @@ class EmailAddress(BaseModel):
     # No default dimension: an address belongs to no one system.
     DEFAULT_DIMENSIONS: ClassVar[dict[str, str]] = {}
     NATURAL_KEY: ClassVar[tuple[str, ...]] = ("address",)
+    # No event time: an address is a value, not something that happened or was created at a stated time; no source time is stored.
+    EVENT_TIME = NO_EVENT_TIME
 
     FIELD_CRUD_SCHEMA: ClassVar[dict[str, Any]] = {
         "address": {"type": "string", "minLength": 3, "maxLength": MAX_ADDRESS},
