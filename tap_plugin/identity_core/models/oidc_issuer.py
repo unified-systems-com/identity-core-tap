@@ -4,6 +4,7 @@ from typing import Any, ClassVar
 
 from django.db import models
 
+from tap_grid.event_time import NO_EVENT_TIME
 from tap_grid.models import BaseModel
 
 
@@ -37,6 +38,8 @@ class OidcIssuer(BaseModel):
     ENTITY_DESCRIPTION: ClassVar[str] = "An OpenID Connect identity provider (issuer)."
     ENTITY_ICON: ClassVar[str] = "oidc-issuer"
     DEFAULT_DIMENSIONS: ClassVar[dict[str, str]] = {"identity.protocol": "oidc"}
+    # No event time: issuer discovery states no creation time, and configuration is written empty (issuer.py); nothing to declare.
+    EVENT_TIME = NO_EVENT_TIME
     # Identity-anchor palette — amber/gold, distinct from github-blue, AWS-beige,
     # and sigstore-green; the hub all three reference.
     DEFAULT_DISPLAY: ClassVar[dict[str, Any]] = {

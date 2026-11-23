@@ -4,6 +4,7 @@ from typing import Any, ClassVar
 
 from django.db import models
 
+from tap_grid.event_time import NO_EVENT_TIME
 from tap_grid.models import BaseModel
 
 
@@ -34,6 +35,8 @@ class Organization(BaseModel):
     # artefact), and a party-kind value would only restate the entity type.
     DEFAULT_DIMENSIONS: ClassVar[dict[str, str]] = {}
     NATURAL_KEY: ClassVar[tuple[str, ...]] = ("name",)
+    # No event time: a role-free party record with name and domain only; no source time is stored.
+    EVENT_TIME = NO_EVENT_TIME
     # Same amber/gold identity-anchor palette as oidc_issuer: both are identity substrate.
     DEFAULT_DISPLAY: ClassVar[dict[str, Any]] = {
         "tap_viz": {

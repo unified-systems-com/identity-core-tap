@@ -4,6 +4,7 @@ from typing import Any, ClassVar
 
 from django.db import models
 
+from tap_grid.event_time import NO_EVENT_TIME
 from tap_grid.models import BaseModel
 
 
@@ -34,6 +35,8 @@ class Team(BaseModel):
     # No default dimension: a kind-of-team value would bake one view in.
     DEFAULT_DIMENSIONS: ClassVar[dict[str, str]] = {}
     NATURAL_KEY: ClassVar[tuple[str, ...]] = ("handle",)
+    # No event time: an operator-assigned group; it stores no time any source states.
+    EVENT_TIME = NO_EVENT_TIME
     DEFAULT_DISPLAY: ClassVar[dict[str, Any]] = {
         "tap_viz": {
             "shape": "ellipse",

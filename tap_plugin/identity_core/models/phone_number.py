@@ -5,6 +5,7 @@ from typing import Any, ClassVar
 from django.core.exceptions import ValidationError
 from django.db import models
 
+from tap_grid.event_time import NO_EVENT_TIME
 from tap_grid.models import BaseModel
 from tap_plugin.identity_core.contact import MAX_PHONE_DIGITS, country_code_length
 
@@ -39,6 +40,8 @@ class PhoneNumber(BaseModel):
     ENTITY_ICON: ClassVar[str] = "phone-number"
     DEFAULT_DIMENSIONS: ClassVar[dict[str, str]] = {}
     NATURAL_KEY: ClassVar[tuple[str, ...]] = ("country_code", "national_number", "extension")
+    # No event time: a number is a value, not an event; no source time is stored.
+    EVENT_TIME = NO_EVENT_TIME
 
     FIELD_CRUD_SCHEMA: ClassVar[dict[str, Any]] = {
         "country_code": {**_DIGITS, "minLength": 1, "maxLength": 3},
