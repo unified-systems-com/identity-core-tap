@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.1.8](https://github.com/unified-systems-com/identity-core-tap/compare/v0.1.7...v0.1.8) (2026-11-24)
+
+
+### Features
+
+* declare event time for every model (tap v0.4.7) ([7a6524c](https://github.com/unified-systems-com/identity-core-tap/commit/7a6524cdbf571b3722b1102741782db5cb41ac55))
+* declare event time for every model (tap v0.4.7) ([59c2ac1](https://github.com/unified-systems-com/identity-core-tap/commit/59c2ac12491cc7279cd3265d103d6a2ae47ad90f))
+* tap v0.4.9 — spine copies migration, format "1" documents ([055c205](https://github.com/unified-systems-com/identity-core-tap/commit/055c2054dbb054025ce9a37c3601a7ce7046ff64))
+* tap v0.4.9 — spine copies migration, format "1" documents ([5026000](https://github.com/unified-systems-com/identity-core-tap/commit/5026000787d6b17c067f5485cb718ecf93d6ae18))
+
+
+### Documentation
+
+* **ci:** nightly caller comment matches core v0.4.7's release and migrations rows ([38b215f](https://github.com/unified-systems-com/identity-core-tap/commit/38b215ffa56741dc57b544c3e2e5c19b96b5adb4))
+
 ## [0.1.7](https://github.com/unified-systems-com/identity-core-tap/compare/v0.1.6...v0.1.7) (2026-11-13)
 
 
