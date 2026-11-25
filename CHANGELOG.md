@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.9](https://github.com/unified-systems-com/identity-core-tap/compare/v0.1.8...v0.1.9) (2026-11-25)
+
+
+### Bug Fixes
+
+* ship the history event-time migration on the tap v0.5.0 floor ([eeeaf5c](https://github.com/unified-systems-com/identity-core-tap/commit/eeeaf5c0ce27d78797bfb915dd86dedf72cdfb9a))
+* ship the history event-time migration on the tap v0.5.0 floor ([40f6ede](https://github.com/unified-systems-com/identity-core-tap/commit/40f6eded3e14ce8337611b5a15907aefeb9fd6a7))
+
 ## [0.1.8](https://github.com/unified-systems-com/identity-core-tap/compare/v0.1.7...v0.1.8) (2026-11-24)
 
 
