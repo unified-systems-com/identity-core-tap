@@ -10,6 +10,7 @@ import uuid
 
 from tap_grid.caller_context import CallerContext
 from tap_grid.grift.importer import grift_import
+from tap_grid.grift.upgrade import build_header
 from tap_grid.models import Edge, Entity
 from tap_grid.services import WriteOperation, write_batch
 
@@ -150,7 +151,9 @@ def _import(nodes: list[dict], edges: list[dict]):
         "nodes": nodes,
         "edges": edges,
     }
-    return grift_import({"metadata": {"grift_version": "0"}, "_reserved": {}, "batches": [batch]})
+    document: dict = {"_reserved": {}, "batches": [batch]}
+    document["metadata"] = build_header(document)
+    return grift_import(document)
 
 
 @pytest.mark.django_db
