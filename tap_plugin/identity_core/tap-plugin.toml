@@ -1,5 +1,5 @@
 manifest_version = "0"
-plugin_version = "0.1.8" # x-release-please-version
+plugin_version = "0.1.9" # x-release-please-version
 requires_tap = ">=0.5.0"  # 0009_history_event_time depends on tap_grid 0024 (core v0.5.0: event time on history rows)
 slug = "identity_core"
 name = "TAP Identity Core"
@@ -31,7 +31,7 @@ USES_EMAIL_ADDRESS__identity_core = "edges/USES_EMAIL_ADDRESS.edge.json"
 [[boot.records]]
 name = "ci"
 description = "RESERVED NAME (req-boot-bootstrap-ci-record): the stack this plugin's own tests run in — depends_on closure + self, offline, credential-free. The consumer flips self to editable."
-sha256 = "009f6b165c89a0197905a096196641e4415dffcce0593083aba0e47833b2b6f3"
+sha256 = "a9efc091246f3cc6d9ada4156b445dc138c4c0768476a07c1bc8f64a0830b92e"
 
 [grift]
 dimension = "grift/dimension.grift.json"
