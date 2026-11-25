@@ -1,6 +1,6 @@
 manifest_version = "0"
 plugin_version = "0.1.8" # x-release-please-version
-requires_tap = ">=0.4.9"
+requires_tap = ">=0.5.0"  # 0009_history_event_time depends on tap_grid 0024 (core v0.5.0: event time on history rows)
 slug = "identity_core"
 name = "TAP Identity Core"
 description = "Cross-cutting federated-identity vocabulary substrate — the OIDC issuer convergence node + issuer identity primitives. Library plugin: no collector. Owns two generic edges with wildcard sources (TRUSTS_ISSUER, HELD_BY_HUMAN) so any principal can trust an issuer, and any account can resolve to one human, without the substrate depending upward. Also the people vocabulary: human, team, and the BELONGS_TO_TEAM and LEADS_TEAM edges."
