@@ -28,6 +28,6 @@ jobs:
     # Pinned to unified-systems-com/tap v0.5.0 (af6c940e52bc68b50add3b9ff63e600da8265e58), the release this plugin's
     # 0009_history_event_time migration targets; plugin-ci's harness is the floor and runs `makemigrations --check`
     # over the plugin's models. Renovate does not track this pin: move it on purpose.
-    uses: unified-systems-com/tap/.github/workflows/plugin-ci.yml@af6c940e52bc68b50add3b9ff63e600da8265e58
+    uses: unified-systems-com/tap/.github/workflows/plugin-ci.yml@e4d2e5c144d629ba2a07bff0a2dde390ed132a01
     with:
       plugin_slug: identity_core
